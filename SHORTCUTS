@@ -1,0 +1,89 @@
+#Common:
+C-c        copy
+C-x 	   cut
+C-v 	   paste
+C-f 	   Find
+F2 / F3    open javadoc /  documentation (describe what is at 
+HOME   	   begining of line
+END	   end of line
+C-HOME	   begining of file
+C-END	   end of file
+C-z 	   undo
+C-a 	   select all (really useful??)
+Ctrl + R   Refresh the active window. (emacs ^L)
+C[-S]-tab  switch between tabs, buffers
+
+
+# NEW IDEAS
+D(C-c) cut
+D(C-f) reverse search direction
+
+
+#gedit
+C-w    close tab
+C-S-w  close all tabs
+C-n    new file new window
+C-t    new tab
+C-s    save
+C-S-s  save-as
+C-q    quit
+C-S-z  redo
+
+#emacs
+TAB - indent
+C-g intr
+C-c C-c  comment out region
+C-t
+
+# Intellij
+esc          intr
+Alt-Enter    - context action
+C-space (??) code completion
+C-s 	     save file
+Ctrl Ctrl    run anything
+Ctrl+E 	     The project window may not be the best way to navigate to the file we want. We can view the most recently opened files u
+
+Alt+F7       Instead of finding the declaration, often we want to find where something is used.
+Ctrl+B       We often want to navigate the code from within the code. With ⌘B (MacOS), or Ctrl+B (Windows/Linux) we can go to the declaration
+⌥↑ / ⌥↓ or Ctrl + W / Shift + Ctrl + W
+     	     We can select increasing or decreasing sections of code near the cursor
+Ctrl + /     toggle comment 
+S-C-Enter    Complete Current Statement,
+
+Ctrl+Alt+L   We can easily format the current file to
+Shift+Ctrl+A We don’t have to remember all of these shortcuts. Use Find Action,
+Shift shift  The ultimate shortcut is search everywhere.  Doubl
+S-F2  	     Jump to the next or previous highlighted error
+A-F7 	     find useages
+
+# Visual studio
+C-p	     open file
+Ctrl+Shift+N New window/instance
+Ctrl+Shift+W Close window/instance
+Ctrl+, User Settings
+Ctrl+K Ctrl+S Keyboard Shortcuts
+Alt+ ↑ / ↓ Move line up/down
+Shift+Alt + ↓ / ↑ Copy line up/down
+Ctrl+Enter Insert line below
+Ctrl+Shift+Enter Insert line above
+Ctrl+Shift+\ Jump to matching b
+Home / End Go to beginning/end of line
+Ctrl+Home Go to beginning of file
+Ctrl+End Go to end of file
+Ctrl+N New File
+Ctrl+O Open File...
+Ctrl+S Save
+Ctrl+Shift+S Save As...
+Ctrl+K S Save All
+Ctrl+F4 Close
+Ctrl+K Ctrl+W Close All
+Ctrl+\ Split editor
+Ctrl+T Show all Symbols
+Ctrl+G Go to Line...
+Ctrl+P Go to File...
+Ctrl+Shift+O Go to Symbol...
+Ctrl+Shift+M Show Problems panel
+F8 Go to next error or warning
+Shift+F8 Go to previous error or warning
+Ctrl+Shift+Tab Navigate editor group history
+Alt+ ← / → Go back / forward

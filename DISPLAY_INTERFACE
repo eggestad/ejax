@@ -1,0 +1,14 @@
+
+
+core load .so
+
+then call __driver_init with initial buffer , which return display interface struct
+
+
+driver gets the appropriate part of the buffer to display
+driver gets the status line info
+
+driver optionally registers functions to be available in JS engine.
+driver optionally registers properties (may or may not be writeable) to be available in JS engine.
+
+driver sends all kbd, mouse and other events. 

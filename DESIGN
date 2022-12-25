@@ -1,0 +1,90 @@
+see https://lwn.net/Articles/819452/
+
+Copy most useful features from emacs
+- kill ring/stack
+- cut/copy stack
+- emacs style undo and redo
+- keyboard macros
+-  GUI and text based
+- rectangles
+- language senistivity / colors
+- push/pop mark
+- split windows
+- regexp
+- key bindings
+- 
+
+HOWEVER
+- replace lisp with javascript
+- embeddable (so that it can be a widget in a GUI
+- plugable display drivers (vt100, gtk, win32 etc) including headless to emulate -batch in emacs
+- c++ plugin to expand fetaures
+- TABS (not C-x b)
+- even with running by ansi terminal, everyone use xterm/
+- ESC as prefix is no longer necessary as moder term emulators do a ^[x on alt-x (and for all a-z)
+  C-g can therefore be replaced by ESC
+
+Why JS
+- umbuqious almost everybody know how to write JS
+- have  nice lambas
+- have greate JIT emabadable JS engines available (v8 is preferable at this writing)
+- a lot of node.js libs can be included.
+
+WE NEED DOUBLE CLICK SUPPPoRT
+
+
+keyboard short cuts
+standard: C-x, C-v, C-c (double click C-c should map to C-x)
+Also check default VSC, Eclipse and Intellij short cuts
+
+
+IDEAS:
+
+ejax GTK shell ->  embedded shell/terminnal -> ssh ->  run ejax (detect terminal type as ejax terminal, add menus etc in shell by ESC seqences. 
+
+
+
+
+TExtEditor data structure
+fragment {
+	 string text
+	 textattributes
+}
+
+line{
+	list<fragment>
+	int pos
+	int line
+	metainfo // to be used to mark occurances, compile wrrors, breakpoints, etc
+}
+
+file/buffer = line[]
+
+UI must handle both display and input devices
+
+UI driver provide fucntions:
+setTabIndent()
+setFile(FileBUffer) 
+scroll(pos, line, lineoffset)
+update (startline, endline)
+setStatus(key, value)
+setMenus(Menus)
+bell()
+resizeWindow()
+createWindow()
+closeWindow()
+showAlert()
+showConfirmation()
+enableCommandInput()
+disable(CommandInput)
+
+UI must call :
+   getLines(start, end) 
+   onkeypress()
+   onkeyrelease()
+   onkey()
+   onmousemove()
+   onmousebuttonpress()
+   onmousebuttonrelease()
+   call("function", args) // from menu's and tool boxes
+	
