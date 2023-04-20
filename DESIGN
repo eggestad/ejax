@@ -30,11 +30,27 @@ Why JS
 - have greate JIT emabadable JS engines available (v8 is preferable at this writing)
 - a lot of node.js libs can be included.
 
+
+Explore lisp to JS & lisp to webassembly compilers.
+Explore lisp interpreters written in JS like LIPS
+
+
+
+
 WE NEED DOUBLE CLICK SUPPPoRT
 
 
 keyboard short cuts
-standard: C-x, C-v, C-c (double click C-c should map to C-x)
+standard: C-x, C-v, C-c
+ double click C-c should map to cut)
+ double click C-x should give emacs like C-x prefix
+ single click C-x need sto be user selectable to either of the above options
+
+ double click Ctrl should give emacs like C-x prefix
+ double click Alt should give emacs like M-x prompt
+
+
+
 Also check default VSC, Eclipse and Intellij short cuts
 
 

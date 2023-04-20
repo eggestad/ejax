@@ -9,14 +9,33 @@ END	   end of line
 C-HOME	   begining of file
 C-END	   end of file
 C-z 	   undo
+C-S-z 	   redo
 C-a 	   select all (really useful??)
 Ctrl + R   Refresh the active window. (emacs ^L)
 C[-S]-tab  switch between tabs, buffers
+
+# Emacs binding that expire:
+# All of these shall be replaced by arow keys w/modifier keys
+C-f   forward char
+C-b   backward
+C-p   Prev
+C-n   next
+
+M-f   forward word
+M-b   backward
+
+C-M-f   forward sexp
+C-M-b   backward
+C-M-p   Prev
+C-M-n   next
+
 
 
 # NEW IDEAS
 D(C-c) cut
 D(C-f) reverse search direction
+
+
 
 
 #gedit

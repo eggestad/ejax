@@ -10,7 +10,6 @@
 
 
 
-typedef unsigned long Point;
 
 namespace ejax {
 
@@ -47,7 +46,6 @@ namespace ejax {
    
       size_t size;
       size_t linecount;
-      Point point;
       std::vector<TextBufferLine> lines;
       long currentLine;
 
@@ -69,7 +67,7 @@ namespace ejax {
 	    
       
    public:
-   TextBuffer(): size(0), linecount(1), point(0), lines() {
+   TextBuffer(): size(0), linecount(1), lines() {
 	 lines.push_back(TextBufferLine());
 	 currentLine = 1;
       };
@@ -80,14 +78,11 @@ namespace ejax {
 	 insertText(s);
       };
       
-      void insertText(std::string str);
+      void insertText(long pos, std::string str);
       //void insertFullLine(std::string str, ulong linenum);
-      void insertChar(char c);
-      void deleteChar();
-      void backspace();
-      Point getPoint();
-      Point setPoint(Point abspos);
-      void movePoint(long rel);
+      void insertChar(long pos, char c);
+      void deleteChar(long pos);
+      void backspace(long pos);
       
       void dump();
 	 
