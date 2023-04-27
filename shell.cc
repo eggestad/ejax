@@ -38,11 +38,20 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#ifdef VER_8_2
 #include "include/v8.h"
+#else
+#include "include/v8-context.h"
+#include "include/v8-exception.h"
+#include "include/v8-initialization.h"
+#include "include/v8-isolate.h"
+#include "include/v8-local-handle.h"
+#include "include/v8-script.h"
+#include "include/v8-template.h"
+#endif
 #include "src/debug/interface-types.h"
 #include "src/debug/debug-interface.h"
 
-#include <string>
 #include <iostream>
 
 #include "base-functions.h"
@@ -105,8 +114,8 @@ int main(int argc, char* argv[]) {
      v8::String::NewFromUtf8Literal(isolate, "unnamed");
   // Create a string containing the JavaScript source code.
   v8::Local<v8::String>  source ;
-  // "function foo() {}; console.info('hei hei'); var match = 0;if(arguments[0] == arguments[1]) { match = 1; } return match; }"
-  source = v8::String::NewFromUtf8Literal(isolate, "function foo() { console.log('hei hei'); var match = 0;if(arguments[0] == arguments[1]) { match = 1; } return match; };"	 );
+  // "function foo() {}; console.info('hei x hei'); var match = 0;if(arguments[0] == arguments[1]) { match = 1; } return match; }"
+  source = v8::String::NewFromUtf8Literal(isolate, "function foo() { console.log('hei x hei'); var match = 0;if(arguments[0] == arguments[1]) { match = 1; } return match; };"	 );
   
   bool success = ExecuteString(isolate, source, file_name, false, true);
    
@@ -114,7 +123,11 @@ int main(int argc, char* argv[]) {
   }
   isolate->Dispose();
   v8::V8::Dispose();
+#ifdef VER_8_2
   v8::V8::ShutdownPlatform();
+#else
+  v8::V8::DisposePlatform();
+#endif
   delete create_params.array_buffer_allocator;
   return result;
 }
@@ -166,21 +179,21 @@ void GetPoint(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
   v8::Handle<v8::Object> global = context->Global();
   v8::Local< v8::String> key =v8::String::NewFromUtf8(isolate, "foo").ToLocalChecked();
-  v8::String *key2 = *(v8::String::NewFromUtf8(isolate, "foo").ToLocalChecked());
 
-  v8::MaybeLocal<v8::Value> foo_value = global->Get(context, key);
-  
-  v8::Local<v8::Function> func = v8::Local<v8::Function>::Cast(foo_value.ToLocalChecked());
-  printf("::%s %p\n", key2, &func);
-  printf("::%d\n", func.IsEmpty());
+  v8::Local<v8::Value> foo_value = global->Get(context, key).ToLocalChecked();;
 
-  if (func->IsFunction()) {
+
+
+  //v8::Local<v8::Function> func = v8::Local<v8::Function>::Cast(foo_value);
+  //  printf("::%d\n", foo_value.As<v8::Object>()->IsEmpty());
+
+  if (foo_value->IsFunction()) {
 
   } else {
      Error( "::foo is not a function");
   }
 
-  // v8::Handle<v8::Function> func = v8::Handle<v8::Function>::Cast(value);
+  //v8::Handle<v8::Function> func = v8::Handle<v8::Function>::Cast(value);
   //v8::Handle<v8::Value> fargs[2];
 
   
@@ -192,7 +205,8 @@ void GetPoint(const v8::FunctionCallbackInfo<v8::Value>& args) {
   
   //  js_result
 
-  v8::MaybeLocal<v8::Value> js_result= func->Call(context, global, 0, nullptr);
+  //  v8::MaybeLocal<v8::Value> js_result = func->Call(context, global, 0, nullptr);
+  v8::MaybeLocal<v8::Value> js_result = foo_value.As<v8::Object>()->CallAsFunction(context, context->Global(), 0, nullptr);
 
   
   //  v8::String::Utf8Value utf8Value(isolate, js_result);
@@ -217,52 +231,41 @@ void GetPoint(const v8::FunctionCallbackInfo<v8::Value>& args) {
 // functions.
 v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate) {
    Info( "creating context: %s:%d", __FILE__, __LINE__);
-  // Create a template for the global object.
-  v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
 
- // Bind the global 'print' function to the C++ Print callback.
-  global->Set(v8::String::NewFromUtf8Literal(isolate, "print"),
-              v8::FunctionTemplate::New(isolate, Print));
-  // Bind the global 'read' function to the C++ Read callback.
-  global->Set(v8::String::NewFromUtf8Literal(isolate, "read"),
-              v8::FunctionTemplate::New(isolate, Read));
-  // Bind the global 'load' function to the C++ Load callback.
-  global->Set(v8::String::NewFromUtf8Literal(isolate, "load"),
-              v8::FunctionTemplate::New(isolate, Load));
-  // Bind the 'quit' function
-  global->Set(v8::String::NewFromUtf8Literal(isolate, "quit"),
-              v8::FunctionTemplate::New(isolate, Quit));
-  // Bind the 'version' function
-  global->Set(v8::String::NewFromUtf8Literal(isolate, "version"),
-              v8::FunctionTemplate::New(isolate, Version));
 
-  global->Set(v8::String::NewFromUtf8Literal(isolate, "getPoint"),
-              v8::FunctionTemplate::New(isolate, GetPoint));
 
-  global->Set(v8::String::NewFromUtf8Literal(isolate, "x"),
-              v8::FunctionTemplate::New(isolate, GetPoint));
+   // Create a template for the global object.
+   v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
 
-  MyConsole * myConsole = new MyConsole(isolate);
+   addBaseFunctions(isolate, global);
+   
+   global->Set(v8::String::NewFromUtf8Literal(isolate, "getPoint"),
+	       v8::FunctionTemplate::New(isolate, GetPoint));
 
-  v8::debug::SetConsoleDelegate(isolate, myConsole);
+   global->Set(v8::String::NewFromUtf8Literal(isolate, "x"),
+	       v8::FunctionTemplate::New(isolate, GetPoint));
 
-  v8::Local<v8::ObjectTemplate> ejax = v8::ObjectTemplate::New(isolate);
+   MyConsole * myConsole = new MyConsole(isolate);
 
-  ejax->Set(isolate, "getPoint", v8::FunctionTemplate::New(isolate, GetPoint));
+   v8::debug::SetConsoleDelegate(isolate, myConsole);
 
-  global->Set(isolate, "ejax", ejax);
+   v8::Local<v8::ObjectTemplate> ejax = v8::ObjectTemplate::New(isolate);
+
+   ejax->Set(isolate, "getPoint", v8::FunctionTemplate::New(isolate, GetPoint));
+
+   global->Set(isolate, "ejax", ejax);
   
-  auto context = v8::Context::New(isolate, NULL, global);
+   auto context = v8::Context::New(isolate, NULL, global);
 
    //v8::Local<v8::Value> name = v8::String::NewFromUtf8Literal(isolate, "(origin)");
    //v8::ScriptOrigin origin( name);
   
-  // Compile the source code.
-  //script = v8::Script::Compile(context, source, &origin).ToLocalChecked();
+   // Compile the source code.
+   //script = v8::Script::Compile(context, source, &origin).ToLocalChecked();
 
-  // Run the script to get the result.
-  //result = script->Run(context).ToLocalChecked();
-  return context;
+   // Run the script to get the result.
+   //result = script->Run(context).ToLocalChecked();
+   return context;
 }
 
 
@@ -361,7 +364,7 @@ void RunShell(v8::Local<v8::Context> context, v8::Platform* platform) {
   
   Info( "RunShell Starting main loop");
   while (true) {
-     cout << "shell loop begin\n";
+     //cout << "shell loop begin\n";
      //    char buffer[kBufferSize];
      //fprintf(stderr, "> ");
      char* str = rl_gets() ; //fgets(buffer, kBufferSize, stdin);
@@ -374,7 +377,7 @@ void RunShell(v8::Local<v8::Context> context, v8::Platform* platform) {
 		   name, true, true);
      do {
 	auto rc = v8::platform::PumpMessageLoop(platform, context->GetIsolate()) ;
-	cout << "pump rc " << rc << "\n";
+	//cout << "pump rc " << rc << "\n";
 	
 	if (!rc) break;
      } while(true);
@@ -388,7 +391,7 @@ bool ExecuteString(v8::Isolate* isolate, v8::Local<v8::String> source,
                    bool report_exceptions) {
   v8::HandleScope handle_scope(isolate);
   v8::TryCatch try_catch(isolate);
-  v8::ScriptOrigin origin( name);
+  v8::ScriptOrigin origin(isolate, name);
   v8::Local<v8::Context> context(isolate->GetCurrentContext());
   v8::Local<v8::Script> script;
   if (!v8::Script::Compile(context, source, &origin).ToLocal(&script)) {
@@ -412,7 +415,12 @@ bool ExecuteString(v8::Isolate* isolate, v8::Local<v8::String> source,
         v8::String::Utf8Value str(isolate, result);
         const char* cstr = ToCString(str);
         DEBUG("%s", cstr);
+	printf("%s\n", cstr);
       }
+      if (print_result && result->IsUndefined()) {
+	 printf("(undefined)\n");
+      }
+
       return true;
     }
   }

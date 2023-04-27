@@ -99,3 +99,22 @@ void Version(const v8::FunctionCallbackInfo<v8::Value>& args) {
 			     v8::String::NewFromUtf8(args.GetIsolate(), v8::V8::GetVersion())
 			     .ToLocalChecked());
 }
+
+void addBaseFunctions(v8::Isolate* isolate, v8::Local<v8::ObjectTemplate> global ) {
+
+   // Bind the global 'print' function to the C++ Print callback.
+   global->Set(v8::String::NewFromUtf8Literal(isolate, "print"),
+	       v8::FunctionTemplate::New(isolate, Print));
+   // Bind the global 'read' function to the C++ Read callback.
+   global->Set(v8::String::NewFromUtf8Literal(isolate, "read"),
+	       v8::FunctionTemplate::New(isolate, Read));
+   // Bind the global 'load' function to the C++ Load callback.
+   global->Set(v8::String::NewFromUtf8Literal(isolate, "load"),
+	       v8::FunctionTemplate::New(isolate, Load));
+   // Bind the 'quit' function
+   global->Set(v8::String::NewFromUtf8Literal(isolate, "quit"),
+	       v8::FunctionTemplate::New(isolate, Quit));
+   // Bind the 'version' function
+   global->Set(v8::String::NewFromUtf8Literal(isolate, "version"),
+	       v8::FunctionTemplate::New(isolate, Version));
+}
