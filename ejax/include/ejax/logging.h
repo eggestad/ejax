@@ -1,8 +1,43 @@
-#ifndef _EJAX_DEBUG_H
+#ifndef _EJAX_LOGGING_H
+#define _EJAX_LOGGING_H
+
+#define USE_GLIB_LOG
 
 
 
-#define _EJAX_DEBUG_H
+#ifdef USE_GLIB_LOG
+
+#define G_LOG_USE_STRUCTURED
+#include <glib.h>
+
+#define DEBUG(m...)   g_debug(m)
+/** Info level log. */
+#define Info(m...)    g_info(m)
+/** Warning level log */
+#define Warning(m...) g_warning(m)
+/** Error level log */
+#define Error(m...)   g_critical(m)
+
+/** Fatal leve log and call abort() */
+#define Fatal(m...)   g_error(m)
+
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+   
+   void ejax_log_init();   
+   //   void ejaxlog(int level, const char * format, ...) FORMAT_PRINTF;
+  
+
+#ifdef	__cplusplus
+}
+#endif
+
+
+
+#else // USE_GLIB_LOG
+
 
 #define EJAXLOG_FATAL     0
 #define EJAXLOG_ERROR     1
@@ -15,8 +50,9 @@
 #define EJAXLOG_DEBUG3    8
 #define EJAXLOG_DEBUG4    9
 
+
 #ifdef __GNUC__
-/* gcc hack in order to get wrong arg type in mwlog() */
+/* gcc hack in order to get wrong arg type in ejaxlog() */
 #define FORMAT_PRINTF __attribute__ ((format (printf, 2, 3)))
 #else
 #define FORMAT_PRINTF 
@@ -37,7 +73,7 @@
 extern "C" {
 #endif
    
-   
+   void ejax_log_init();   
    void ejaxlog(int level, const char * format, ...) FORMAT_PRINTF;
    
 
@@ -45,4 +81,7 @@ extern "C" {
 #ifdef	__cplusplus
 }
 #endif
-#endif //_EJAX_DEBUG_H
+
+#endif // USE_GLIB_LOG
+
+#endif //_EJAX_LOGGING_H
