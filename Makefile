@@ -10,7 +10,7 @@ v8obj=$(HOME)/v8/11.2/v8/out.gn/x64.release.sample/obj
 v8inc=$(HOME)/v8/11.2/v8/
 
 
-CXXFLAGS=-std=c++17 -DV8_COMPRESS_POINTERS  -DV8_ENABLE_SANDBOX
+CXXFLAGS= `pkg-config --cflags --libs glib-2.0` -std=c++17 -DV8_COMPRESS_POINTERS  -DV8_ENABLE_SANDBOX
 #CXX=clang++
 all: shell testEjax shell-old hello-world
 
@@ -42,7 +42,7 @@ hello-world.o: hello-world.cc
 	$(CXX) -g -c -I. -I$(v8inc) -I$(v8inc)/include -Iejax/include   $(CXXFLAGS)  $<
 
 logging.o: ejax/logging.cc 
-	$(CXX) -g -c -I. -Iejax/include ejax/logging.cc -std=c++14 -DV8_COMPRESS_POINTERS 
+	$(CXX) -g -c -I. -Iejax/include ejax/logging.cc  $(CXXFLAGS) 
 
 text_buffer.o: text_buffer.cc   text_buffer.h
 	$(CXX) -g -c $<
