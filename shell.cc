@@ -48,6 +48,8 @@
 #include "include/v8-local-handle.h"
 #include "include/v8-script.h"
 #include "include/v8-template.h"
+
+#include "include/v8-debug.h"
 #endif
 #include "src/debug/interface-types.h"
 #include "src/debug/debug-interface.h"
@@ -69,6 +71,7 @@
  */
 
 using namespace std;
+using namespace v8;
 
 v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate);
 void RunShell(v8::Local<v8::Context> context, v8::Platform* platform);
@@ -84,6 +87,9 @@ static bool run_shell;
 
 
 int main(int argc, char* argv[]) {
+
+   ejax_log_init();   
+
   v8::V8::InitializeICUDefaultLocation(argv[0]);
   v8::V8::InitializeExternalStartupData(argv[0]);
   std::unique_ptr<v8::Platform> platform = v8::platform::NewDefaultPlatform();
@@ -136,7 +142,34 @@ int main(int argc, char* argv[]) {
 class MyConsole : public v8::debug::ConsoleDelegate {
 
    v8::Isolate *isolate;
-   
+
+
+   gchar * FormatMessage(const v8::debug::ConsoleCallArguments& args,
+		       const v8::debug::ConsoleContext& context) {
+      
+      int nargs =  args.Length();
+      gchar * strargs[nargs +1];
+      strargs[nargs] = NULL;
+      
+      const gchar * strargs2[] = {"a", "b", "c"};
+      
+      printf("%p %p %p %p\n", strargs2[0], strargs2[1], strargs2[2], strargs2[3], strargs2[4], strargs2[5]);
+      
+
+      
+      printf("line num %d \n", nargs);
+      for (int i = 0; i < nargs; i++) {	 
+	 v8::String::Utf8Value str(isolate, args[i]);
+	 strargs[i] = g_strdup(ToCString(str));
+	 printf ("  --- %d -> %p\n", i, strargs[i]);
+      }
+      gchar * msg =  g_strjoinv(" ", strargs);
+      for (int i = 0; i < nargs; i++) {
+	 g_free(strargs[i]);
+      }
+      return msg;
+   }
+      
 public:
 
    MyConsole(v8::Isolate *isolate) {
@@ -145,19 +178,39 @@ public:
    virtual void Log(const v8::debug::ConsoleCallArguments& args,
 		    const v8::debug::ConsoleContext& context) {
       //      printf("in log\n");
-      bool first = true;
-      for (int i = 0; i < args.Length(); i++) {
-	 v8::HandleScope handle_scope(isolate);
-	 if (first) {
-	    first = false;
-	 } else {
-	    printf(" ");
-	 }
-	 v8::String::Utf8Value str(isolate, args[i]);
-	 const char* cstr = ToCString(str);
-	 printf("%s", cstr);
+      v8::HandleScope handle_scope(isolate);
+
+      //      g_log_structured
+      
+      Local<StackTrace> st;
+      st = StackTrace::CurrentStackTrace(isolate, 10,  StackTrace::StackTraceOptions::kDetailed);
+      int framecount = st->GetFrameCount();
+      printf("frame counnt %d \n", framecount);
+
+      for (int fnum = 0; fnum < framecount; fnum++) {
+	 Local<StackFrame> sf = st->GetFrame(isolate, fnum);
+	    
+	 int linenum = sf->GetLineNumber();
+	 String::Utf8Value fname(isolate, sf->GetFunctionName());
+	 String::Utf8Value sname(isolate,  sf->GetScriptName());
+
+	 printf("line num %d script %s function %s\n", linenum, ToCString(sname),ToCString(fname));
       }
-      printf("\n");
+
+	 
+      Local<StackFrame> sf = st->GetFrame(isolate, 0);
+      
+      int linenum = sf->GetLineNumber();
+      String::Utf8Value fname(isolate, sf->GetFunctionName());
+      String::Utf8Value sname(isolate, sf->GetScriptName());
+      printf("line num %d script %s function %s\n", linenum, ToCString(sname),ToCString(fname));
+	 
+      gchar * msg = FormatMessage(args, context);
+      
+      printf("msg: %s\n", msg);
+      g_free(msg);
+            
+      
       fflush(stdout);
 
    }
