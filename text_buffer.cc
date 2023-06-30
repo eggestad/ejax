@@ -10,12 +10,12 @@ using namespace std;
 
 namespace ejax {
 
-   namespace {
+    namespace {
 
-    
 
-      list<string> splitByNewLine(string s) {
-	 list<string> l(0);
+
+        list<string> splitByNewLine(string s) {
+           list<string> l(0);
 	 long off = 0;
 	 do {
 	    auto idx = s.find("\n", off);

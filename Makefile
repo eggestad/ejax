@@ -3,8 +3,12 @@
 v8obj=$(HOME)/v8/v8/out.gn/x64.release.sample/obj
 v8inc=$(HOME)/v8/v8/
 
-v8obj=$(HOME)/v8/10.2/v8/out.gn/x64.release.sample/obj
-v8inc=$(HOME)/v8/10.2/v8/
+#CXX=clang++
+CC=gcc
+
+all: shell testEjax shell-old ejax-cmd
+
+CFLAGS=-I. -I./include -I./ejax/include
 
 v8obj=$(HOME)/v8/11.2/v8/out.gn/x64.release.sample/obj
 v8inc=$(HOME)/v8/11.2/v8/
@@ -44,6 +48,7 @@ hello-world.o: hello-world.cc
 logging.o: ejax/logging.cc 
 	$(CXX) -g -c -I. -Iejax/include ejax/logging.cc  $(CXXFLAGS) 
 
+<<<<<<< Updated upstream
 text_buffer.o: text_buffer.cc   text_buffer.h
 	$(CXX) -g -c $<
 
@@ -52,3 +57,12 @@ text_buffer_view: text_buffer_view.cc   text_buffer_view.h
 
 testEjax: test_main.cc text_buffer.o text_buffer_view.o logging.o
 	$(CXX) -Iejax/include -o testEjax test_main.cc $+
+=======
+testEjax: test_main.cc text_buffer.cc   text_buffer.h
+	$(CXX) -Iejax/include -o testEjax test_main.cc text_buffer.cc logging.o
+
+ejax-cmd: ejax_cmdline.o
+	$(CXX) -g -o $@ $<  -L./ejax -l ejax 
+
+ejax_cmdline.o: ejax_cmdline.c 
+>>>>>>> Stashed changes
