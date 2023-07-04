@@ -2,7 +2,10 @@
 
 #include <iostream>
 #include <assert.h>
-#include "text_buffer.h"
+#include <text_buffer.h>
+#include <text_buffer_view.h>
+
+
 #include <ejax/logging.h>
 
 

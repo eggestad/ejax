@@ -1,4 +1,6 @@
 
+#ifndef TEXT_BUFFER_VIEW_H
+#define TEXT_BUFFER_VIEW_H
 
 typedef unsigned long Point;
 
@@ -32,3 +34,5 @@ namespace ejax {
 
    typedef struct TextBufferView TextBufferView;
 }
+
+#endif  // TEXT_BUFFER_VIEW_H
