@@ -23,8 +23,8 @@ all: shell testEjax shell-old hello-world
 shell: shell.o logging.o base-functions.o utils.o
 	$(CXX) -g -o $@ $+ -lv8_monolith -L$(v8obj)  -pthread -lreadline $(CXXFLAGS)  -ldl	
 
-shell-old: shell-old.o
-	$(CXX) -g -o $@ shell-old.o -lv8_monolith -L$(v8obj)  -pthread -lreadline $(CXXFLAGS)   -ldl
+#shell-old: shell-old.o
+#	$(CXX) -g -o $@ shell-old.o -lv8_monolith -L$(v8obj)  -pthread -lreadline $(CXXFLAGS)   -ldl
 
 hello-world: hello-world.o
 	$(CXX) -g -o $@ $+ -lv8_monolith -L$(v8obj)  -pthread -lreadline $(CXXFLAGS)   -ldl
@@ -41,8 +41,8 @@ utils.o: utils.cc utils.h
 base-functions.o: base-functions.cc  base-functions.h utils.h
 	$(CXX) -g -c -I. -I$(v8inc) -I$(v8inc)/include -Iejax/include $(CXXFLAGS) $<   
 
-shell-old.o: shell-old.cc 
-	$(CXX) -g -c -I. -I$(v8inc) -I$(v8inc)/include -Iejax/include  $(CXXFLAGS)   $<
+#shell-old.o: shell-old.cc
+#	$(CXX) -g -c -I. -I$(v8inc) -I$(v8inc)/include -Iejax/include  $(CXXFLAGS)   $<
 
 hello-world.o: hello-world.cc
 	$(CXX) -g -c -I. -I$(v8inc) -I$(v8inc)/include -Iejax/include   $(CXXFLAGS)  $<
@@ -62,7 +62,9 @@ testEjax: test_main.cc text_buffer.o text_buffer_view.o logging.o
 testEjax.old: test_main.cc text_buffer.cc   text_buffer.h
 	$(CXX) -Iejax/include -o testEjax test_main.cc text_buffer.cc logging.o
 
-ejax-cmd: ejax_cmdline.o
+ejax-cmd: ejax_cmdline.o ejax_cmdline_process.o
 	$(CXX) -g -o $@ $<  -L./ejax -l ejax 
 
-ejax_cmdline.o: ejax_cmdline.c 
+ejax_cmdline.o: ejax_cmdline.c
+
+ejax_cmdline_process.o: ejax_cmdline_process.c
