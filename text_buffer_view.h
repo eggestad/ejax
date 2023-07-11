@@ -1,22 +1,21 @@
 
 #ifndef TEXT_BUFFER_VIEW_H
 #define TEXT_BUFFER_VIEW_H
+#include "text_buffer.h"
 
-typedef unsigned long Point;
 
 namespace ejax {
 
 
    class TextBufferView {
-
-      TextBuffer buffer;
+      TextBuffer * buffer;
       Point point;
       long currentLine;
 
 
    public:
 
-   TextBufferView( TextBuffer buf): point(0) {
+   TextBufferView( TextBuffer * buf): point(0) {
 	 buffer = buf;
 	 currentLine = 1;
       };
@@ -26,7 +25,7 @@ namespace ejax {
       //void insertFullLine(std::string str, ulong linenum);
       void insertChar(char c);
       void deleteChar();
-      void backspace();
+      void backSpace();
       Point getPoint();
       Point setPoint(Point abspos);
       void movePoint(long rel);

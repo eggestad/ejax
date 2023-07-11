@@ -1,9 +1,9 @@
-#include <iostream>
-#include <vector>
-#include <list>
-#include <iterator>
-#include <variant>
 #include "text_buffer.h"
+#include "text_buffer_view.h"
+#include <iostream>
+#include <iterator>
+#include <list>
+#include <vector>
 
 
 using namespace std;
@@ -62,7 +62,8 @@ void foo_split() {
 int main(int argc, char ** argv) {
    //foo_list();
    cout << "===================== doing create\n";
-   TextBuffer buf("00");
+   TextBuffer buffer("00");
+   TextBufferView buf(&buffer);
 
    cout << "===================== doing insert simple\n"; 
    buf.insertText("X");
@@ -73,11 +74,11 @@ int main(int argc, char ** argv) {
    cout << "===================== doone insert\n"; 
       
    cout << buf.getPoint() << endl;
-   buf.dump();
+   buffer.dump();
    cout << "===================== doing insertmiddle\n";
 
    buf.setPoint(9);
-   buf.dump();
+   buffer.dump();
    buf.insertText("####");
    
    cout << "===================== doing delchar\n";
@@ -85,10 +86,4 @@ int main(int argc, char ** argv) {
    buf.deleteChar();
    buf.deleteChar();
    buf.deleteChar();
-
-
-
-
-
-   
  }
