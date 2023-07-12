@@ -1,7 +1,7 @@
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 #include <sys/types.h>
 #include <sys/time.h>
 
