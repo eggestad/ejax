@@ -14,8 +14,8 @@ v8obj=$(HOME)/v8/11.2/v8/out.gn/x64.release.sample/obj
 v8inc=$(HOME)/v8/11.2/v8/
 
 
-CXXFLAGS= `pkg-config --cflags --libs glib-2.0` -std=c++17 -DV8_COMPRESS_POINTERS  -DV8_ENABLE_SANDBOX
-CXXINCLUDE=`pkg-config --cflags --libs glib-2.0` -I. -I$(v8inc) -I$(v8inc)/include -Iejax/include
+CXXFLAGS= `pkg-config --cflags --libs glib-2.0` -g   -std=c++17 -DV8_COMPRESS_POINTERS  -DV8_ENABLE_SANDBOX
+CXXINCLUDE=`pkg-config --cflags --libs glib-2.0` -g -I. -I$(v8inc) -I$(v8inc)/include -Iejax/include
 LDFLAGS=`pkg-config --libs glib-2.0`
 
 #CXX=clang++
@@ -59,7 +59,7 @@ text_buffer_view: text_buffer_view.cc   text_buffer_view.h
 test_main.o: test_main.cc text_buffer.h text_buffer_view.h
 
 testEjax: test_main.o text_buffer.o text_buffer_view.o logging.o
-	$(CXX) $(LDFLAGS) -Iejax/include -o testEjax  $+
+	$(CXX) $(LDFLAGS) -g  -Iejax/include -o testEjax  $+
 
 testEjax.old: test_main.cc text_buffer.cc   text_buffer.h
 	$(CXX) -Iejax/include -o testEjax test_main.cc text_buffer.cc logging.o
@@ -70,3 +70,11 @@ ejax-cmd: ejax_cmdline.o ejax_cmdline_process.o
 ejax_cmdline.o: ejax_cmdline.c
 
 ejax_cmdline_process.o: ejax_cmdline_process.c
+
+
+#
+#
+
+
+cpp-testbed: cpp-testbed.cc
+

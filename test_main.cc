@@ -64,26 +64,32 @@ int main(int argc, char ** argv) {
    cout << "===================== doing create\n";
    TextBuffer buffer("00");
    TextBufferView buf(&buffer);
+   buffer.dump();
 
    cout << "===================== doing insert simple\n"; 
    buf.insertText("X");
+   buffer.dump();
    cout << "===================== doing insert leading newline\n"; 
    buf.insertText("\n11");
+   buffer.dump();
    cout << "===================== doing insert 3 lines\n"; 
    buf.insertText("\n12\n34\n5: and some\n67\n89");
+   buffer.dump();
    cout << "===================== doone insert\n"; 
       
    cout << buf.getPoint() << endl;
    buffer.dump();
-   cout << "===================== doing insertmiddle\n";
+   cout << "===================== doing insert middle\n";
 
    buf.setPoint(9);
-   buffer.dump();
    buf.insertText("####");
-   
+   buffer.dump();
+
    cout << "===================== doing delchar\n";
    buf.deleteChar();
    buf.deleteChar();
    buf.deleteChar();
    buf.deleteChar();
+   buffer.dump();
+
  }

@@ -8,19 +8,32 @@
 #include <vector>
 #include <iostream>
 
+
 namespace ejax {
 
+   class BufferView{
+   };
+   
+   /*
+    * Text Buffer Line
+    */
    struct TextBufferLine {
       std::string line;
       int pos;
       int lineNum;
 
-      TextBufferLine() : line(""), pos(0), lineNum(1) { line = std::string(""); };
-      TextBufferLine(std::string s, int ln, long p) : line(s), pos(p), lineNum(ln){};
+      TextBufferLine() :  pos(0), lineNum(1) { line = std::string(""); };
+      //TextBufferLine(std::string s, int ln, long p) : line(s), pos(p), lineNum(ln){};
+      TextBufferLine(std::string s, int ln, long p) {
+    	  line = s;
+    	  pos = p;
+    	  lineNum = ln;
+      };
+
 
       void print() {
-         printf("BL: pos:%6d line: %5d  (%3d)::\e[93m%s\e[m:: \n",
-                pos, lineNum, line.length(), line.c_str());
+         printf("BL: pos:%6d line: %5d  (%3d)::\e[93m%s\e[m:: %p\n",
+                pos, lineNum, line.length(), line.c_str(), this);
       }
 
       std::pair<std::string, std::string> split(Point point) {
@@ -38,12 +51,15 @@ namespace ejax {
 
    typedef TextBufferLine TextBufferLine;
 
-
+   /*
+    * Text buffer
+    */
    class TextBuffer {
 
       size_t size;
-      size_t linecount;
-      long currentLine;
+      int meanLinelength = 20; // C code
+
+      std::vector<TextBufferLine>::iterator getLineByPoint(Point point) ;
 
   public:
       std::vector<TextBufferLine> lines;
@@ -52,11 +68,11 @@ namespace ejax {
       }
 
       void recalc(long linestart);
-
-
+      void registerView(BufferView *);
+      
       TextBuffer();
 
-      TextBuffer(std::string s);
+      TextBuffer(std::string s); // Really necessary?
 
       void insertText(Point pos, std::string str);
       //void insertFullLine(std::string str, ulong linenum);
