@@ -22,7 +22,13 @@ namespace ejax {
    }
 
    Point TextBufferView::getPoint() {
-      return this->point;
+	   return this->point;
+   }
+   Point TextBufferView::getPointMin() {
+	   return 1;
+   }
+   Point TextBufferView::getPointMax() {
+	   return this->buffer->getSize()+1;
    }
 
    Point TextBufferView::setPoint(Point  newPoint) {

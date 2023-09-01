@@ -23,6 +23,8 @@ namespace ejax {
       void deleteChar();
       void backSpace();
       Point getPoint();
+      Point getPointMin();
+      Point getPointMax();
       Point setPoint(Point abspos);
       void movePoint(long rel);
    };
