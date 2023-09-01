@@ -11,7 +11,7 @@
 
 namespace ejax {
 
-   class BufferView{
+   class BufferView {
    };
    
    /*
@@ -55,13 +55,15 @@ namespace ejax {
     * Text buffer
     */
    class TextBuffer {
+	   std::string name;
+	   std::string fileurl;
 
-      size_t size;
-      int meanLinelength = 20; // C code
+	   size_t size;
+	   int meanLinelength = 20; // C code
 
-      std::vector<TextBufferLine>::iterator getLineByPoint(Point point) ;
+	   std::vector<TextBufferLine>::iterator getLineByPoint(Point point) ;
 
-  public:
+   public:
       std::vector<TextBufferLine> lines;
       size_t getSize() {
          return size;
@@ -83,6 +85,27 @@ namespace ejax {
 
 
       void deleteChar(Point point);
+
+      std::string asString();
+      std::string asString(Point start, long len);
+
+      void writeToFile(std::string fullpath);
+
+      const std::string& getFileurl() const {
+    	  return fileurl;
+      }
+
+      void setFileurl(const std::string &fileurl) {
+    	  this->fileurl = fileurl;
+      }
+
+      const std::string& getName() const {
+    	  return name;
+      }
+
+      void setName(const std::string &name) {
+    	  this->name = name;
+      }
    };
    typedef struct TextBuffer TextBuffer;
 

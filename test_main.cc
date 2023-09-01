@@ -67,7 +67,12 @@ int main(int argc, char ** argv) {
    buffer.dump();
 
    cout << "===================== doing insert simple\n"; 
-   buf.insertText("X");
+   buf.insertText("X\n");
+   buffer.dump();
+
+   cout << "===================== doing insert simple @4\n";
+   buf.setPoint(3);
+   buf.insertText("Y");
    buffer.dump();
    cout << "===================== doing insert leading newline\n"; 
    buf.insertText("\n11");
@@ -91,5 +96,8 @@ int main(int argc, char ** argv) {
    buf.deleteChar();
    buf.deleteChar();
    buffer.dump();
+   cout << "--- buffer ---\n";
+   cout << buffer.asString() << endl;
+   buffer.writeToFile("/tmp/ejax.txt");
 
  }

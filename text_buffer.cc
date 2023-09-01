@@ -5,7 +5,7 @@
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
-
+#include <fstream>
 
 #include "ejax/include/ejax/logging.h"
 
@@ -106,7 +106,7 @@ namespace ejax {
          cout << "inserting: no new lines\n";
          auto p = (*cursor).split(point);
          (*cursor).line = get<0>(p) + str + get<1>(p);
-         recalc(cursor->lineNum);
+         recalc(cursor->lineNum-1);
          return;
       }
 
@@ -175,10 +175,11 @@ namespace ejax {
 
 
    void ejax::TextBuffer::recalc(long linestart) {
-      printf("recalc lines %d %d\n", linestart, lines.size());
-      long pos = 0;
-      long lnum = 1;
-      for (auto it = lines.begin(); it != lines.end(); it++) {
+      printf("recalc lines start %d of %d\n", linestart, lines.size());
+      auto it= lines.begin()+ (linestart);
+      long pos = it->pos;
+      long lnum = it->lineNum;
+      for (; it != lines.end(); it++) {
          it->pos = pos;
          it->lineNum = lnum++;
          pos += it->line.length() + 1;
@@ -187,4 +188,71 @@ namespace ejax {
       this->size = pos;
       //dump();
    }
+
+   void TextBuffer::registerView(BufferView*) {
+   }
+
+   void TextBuffer::backspace(Point pos) {
+   }
+
+   void TextBuffer::writeToFile(string path) {
+	   std::string s("");
+
+	   std::ofstream ofs;
+	   ofs.open (path, std::ofstream::out );
+	   //if ( ! ofs.is_open() ) throw new exception(); // "open file failed");
+	   if ( ! ofs.is_open() ) throw new ios_base::failure( "open file failed");
+	   for (auto it= lines.begin(); it != lines.end(); it++) {
+		   if (it->pos != 0) ofs << "\n";
+		   ofs << it->line;
+	   }
+
+	   ofs.close();
+   }
+
+   std::string TextBuffer::asString() {
+	   std::string s("");
+
+
+	   for (auto it= lines.begin(); it != lines.end(); it++) {
+		   if (it->pos != 0) s.append("\n");
+		   s.append(it->line);
+	   }
+	   return s;
+   }
+
+   std::string TextBuffer::asString(Point start, long len) {
+
+	   string s("");
+	   if (start >= this->size) return s;
+	   if (start+len > this->size) len = this->size - start;
+	   Point end = start+len;
+
+	   auto it= lines.begin();
+
+	   while (it != lines.end() &&  ( (it->pos + it->line.size()) < start ) ) {
+		   it++;
+	   }
+	   while (it != lines.end()) {
+		   // if start line
+		   if (start >= it->pos && start <=  it->pos + it->line.size()) {
+			   auto offset = start - it->pos;
+			   s.append(it->line.substr(offset, it->line.size() - offset));
+
+
+			   // if end line
+		   } else if (end >= it->pos && end <=  it->pos + it->line.size()) {
+			   s.append("\n");
+			   s.append(it->line.substr(0, end - it->line.size()));
+			   return s;
+
+		   }  else {
+			   s.append("\n");
+			   s.append(it->line);
+		   }
+	   }
+	   return s;
+
+   }
+
 }
